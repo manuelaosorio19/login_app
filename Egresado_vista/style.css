@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+*{/* mi fuente la saque de google*/
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+body{
+    border:  2px solid orange;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f4f3;
+}
+.container{
+    width: 1000px;
+    height: 600px;
+    display: flex;
+    position: relative;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgb(0, 0, 0, 0.3);
+}
+.container-form{
+    width: 100%;
+    overflow: hidden;
+
+}
+.container-form form{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s ease-in-out;
+
+}
+.container-form h2{
+    font-size: 30px;
+    margin-bottom: 20px;
+
+}
+.social-networks{
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+.social-networks ion-icon{
+    border: 1px solid white;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+}
+.container-form span{
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+.container-input{
+    width: 400px;
+    height: 45px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 0 15px;
+    background-color: #EEEEEE;
+}
+.container-input input,
+.container-input select {
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+    font-size: 1rem;
+    color: #333;
+}
+.container-input select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 20px;
+}
+.container-form a{
+    color: black;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+.button{
+    width: 170px;
+    height: 45px;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+}
+/*animación formularios*/
+
+.sign-up{
+    transform: translateX(-100%);
+}
+.container.toggle .sign-in{
+    transform: translateX(100%);
+
+}
+.container.toggle .sign-up{
+    transform: translateX(0%);
+}
+/*Welcome*/
+.container-welcome{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    transform: translateX(100%);
+    background-color: #007bff;
+    transition: transform 0.5s ease-in-out, border-radius 0.5s ease-in-out;
+    overflow: hidden;
+    border-radius: 20% 0 0 20%;
+
+}
+.container.toggle .container-welcome{
+    transform: translateX(0);
+    border-radius: 0 20% 20% 0;
+    background-color: orange;
+}
+.container-welcome .welcome{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 0 50px;
+    color: white;
+    transition: transform 0.5s ease-in-out;
+}
+.welcome-sign-in{
+    transform: translateX(100%);
+}
+.container-welcome h3{
+    font-size: 40px;
+}
+.container-welcome p{
+    font-size: 14px;
+    text-align: center;
+}
+.container-welcome .button{
+    border: 2px solid white;
+    background-color: transparent;
+}
+.container.toggle .welcome-sign-in{
+    transform: translateX(0);
+}
+.container.toggle .welcome-sign-up{
+    transform: translateX(-100%);
+}
+
+/* Mensajes de error */
+.error-message {
+  font-size: 0.7rem;
+  color: rgb(219, 10, 10);
+  margin-top: 2px;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding-left: 8px;
+}
+/* pop up olvido contraseña*/
+.popup-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popup-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  }
+  
+  .popup-box input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    font-size: 0.9em;
+  }
+  
+  .popup-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .popup-buttons button {
+    padding: 8px 12px;
+    font-size: 0.9em;
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+  }
+
+  /* pop up mensajes error*/
+
+  .popup {
+    display: none;
+    position: fixed;
+    top: 5%; /* más arriba */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.popup.show {
+    display: block;
+    opacity: 1;
+}
+.popup.success {
+    background-color: #5bde71; /* verde claro para mensajes de éxito */
+}

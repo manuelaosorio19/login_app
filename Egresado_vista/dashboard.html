@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel de Usuario</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    .dashboard-nav {
+      margin-bottom: 20px;
+    }
+    .dashboard-nav button {
+      margin-right: 10px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .dashboard-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .dashboard-section h3 {
+      margin-top: 0;
+    }
+    .info-container {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #fafafa;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .study-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .form-field label {
+      font-weight: bold;
+      display: block;
+      font-size: 0.9em;
+      margin-bottom: 4px;
+    }
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      padding: 5px;
+      font-size: 0.9em;
+      box-sizing: border-box;
+    }
+    .info-container button {
+      background-color: orange;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+    .event-grid div {
+      padding: 6px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+    }
+    .offers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .offer-item {
+      text-align: center;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .offer-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    #tablaEstudios {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+    }
+    #tablaEstudios th, #tablaEstudios td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: left;
+    }
+    #tablaEstudios button {
+      background-color: orange;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+  <script src="../departamentos/departamentos.js"></script>
+</head>
+<body>
+  <h2>Bienvenido, <span id="nombreUsuario"></span> al Panel</h2>
+  <nav class="dashboard-nav">
+    <button onclick="mostrarSeccion('personal')">Información Personal</button>
+    <button onclick="mostrarSeccion('eventos')">Eventos</button>
+    <button onclick="mostrarSeccion('ofertas')">Ofertas</button>
+    <button onclick="cerrarSesion()">Cerrar Sesión</button>
+  </nav>
+
+  <div id="personal" class="dashboard-section">
+    <h3>Información Personal</h3>
+    <div class="info-container">
+      <div class="info-grid">
+        <div class="form-field"><label>Nombre:</label><input type="text" id="nombre" disabled></div>
+        <div class="form-field"><label>Identificación:</label><input type="number" id="identificacion" disabled></div>
+        <div class="form-field"><label>Teléfono:</label><input type="number" id="telefono"></div>
+        <div class="form-field"><label>Dirección:</label><input type="text" id="direccion"></div>
+        <div class="form-field"><label>Departamento:</label><select id="departamento"></select></div>
+        <div class="form-field"><label>Ciudad:</label><select id="ciudad"></select></div>
+        <div class="form-field"><label>Correo:</label><input type="email" id="correo"></div>
+        <div class="form-field"><label>Programa Académico:</label><input type="text" id="programa" disabled></div>
+      </div>
+      <button onclick="guardarCambios()">Actualizar Información</button>
+
+      <h4 style="margin-top: 20px;">Estudios Académicos</h4>
+      <div class="study-grid">
+        <div class="form-field"><label>Institución:</label><input type="text" id="institucion"></div>
+        <div class="form-field"><label>Título Obtenido:</label><input type="text" id="titulo"></div>
+        <div class="form-field"><label>Año:</label><input type="number" id="anio"></div>
+      </div>
+      <button onclick="agregarEstudio()">Agregar Estudio</button>
+
+      <table id="tablaEstudios">
+        <thead><tr><th>Institución</th><th>Título</th><th>Año</th><th>Acciones</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="eventos" class="dashboard-section">
+    <h3>Eventos</h3>
+    <h3>Eventos Disponibles</h3>
+    <div class="event-grid" id="eventosEgresado"></div>
+    </div>
+  </div>
+
+  <div id="ofertas" class="dashboard-section">
+    <h3>Ofertas</h3>
+    <div class="offers-grid">
+      <div class="offer-item">
+        <img src="https://www.sessionstudio.com.ar/wp-content/uploads/2016/08/curso-online-de-java-gratis.png" alt="Curso Java" />
+        <p><strong>Nombre:</strong> Curso Java</p>
+        <p><strong>Descripción:</strong> Aprende Java desde cero</p>
+        <p><strong>Fecha Fin:</strong> 30/06/2025</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("activeUser"));
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (user) {
+      document.getElementById("nombreUsuario").textContent = user.name || "";
+      document.getElementById("nombre").value = user.name || "";
+      document.getElementById("identificacion").value = user.identificacion || "";
+      document.getElementById("telefono").value = user.telefono || "";
+      document.getElementById("direccion").value = user.direccion || "";
+      document.getElementById("correo").value = user.email || "";
+      document.getElementById("programa").value = user.programa || "";
+      
+      const deptSelect = document.getElementById("departamento");
+      const citySelect = document.getElementById("ciudad");
+
+    //departamentos  
+    for (let dept in colombia) {
+       const option = document.createElement("option");
+       option.value = dept;
+       option.textContent = dept;
+       if (dept === user.departamento) option.selected = true;
+       deptSelect.appendChild(option);
+      }
+    
+    if (user.departamento && colombia[user.departamento]) {
+      citySelect.innerHTML = "<option value=''>Seleccione ciudad</option>";
+      colombia[user.departamento].forEach(ciudad => {
+        const opt = document.createElement("option");
+        opt.value = ciudad;
+        opt.textContent = ciudad;
+      if (ciudad === user.ciudad) opt.selected = true;
+      citySelect.appendChild(opt);
+    });
+  }
+
+      cargarEstudios();
+      mostrarSeccion('personal');
+    } else {
+      document.body.innerHTML = "<p>Sesión no iniciada. <a href='index.html'>Volver al inicio</a></p>";
+    }
+
+    function mostrarSeccion(id) {
+      document.querySelectorAll(".dashboard-section").forEach(sec => sec.style.display = "none");
+      const seccion = document.getElementById(id);
+      if (seccion) seccion.style.display = "block";
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem("activeUser");
+      window.location.href = "index.html";
+    }
+
+    function guardarCambios() {
+      const index = users.findIndex(u => u.email === user.email);
+      user.telefono = document.getElementById("telefono").value;
+      user.direccion = document.getElementById("direccion").value;
+      user.departamento = document.getElementById("departamento").value;
+      user.ciudad = document.getElementById("ciudad").value;
+      user.email = document.getElementById("correo").value;
+
+      if (index !== -1) users[index] = user;
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("activeUser", JSON.stringify(user));
+      alert("Cambios guardados correctamente");
+    }
+
+    function agregarEstudio() {
+      const inst = document.getElementById("institucion").value.trim();
+      const tit = document.getElementById("titulo").value.trim();
+      const anio = document.getElementById("anio").value.trim();
+      if (inst && tit && anio) {
+        const estudio = { institucion: inst, titulo: tit, anio };
+        user.estudios = user.estudios || [];
+        user.estudios.push(estudio);
+
+        const index = users.findIndex(u => u.email === user.email);
+        if (index !== -1) users[index] = user;
+
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("activeUser", JSON.stringify(user));
+
+        cargarEstudios();
+        document.getElementById("institucion").value = "";
+        document.getElementById("titulo").value = "";
+        document.getElementById("anio").value = "";
+      }
+    }
+
+    function cargarEstudios() {
+      const tbody = document.querySelector("#tablaEstudios tbody");
+      tbody.innerHTML = "";
+      (user.estudios || []).forEach((e, i) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `<td>${e.institucion}</td><td>${e.titulo}</td><td>${e.anio}</td><td><button onclick="eliminarEstudio(${i})">Eliminar</button></td>`;
+        tbody.appendChild(fila);
+      });
+    }
+
+    function eliminarEstudio(index) {
+      user.estudios.splice(index, 1);
+      const userIndex = users.findIndex(u => u.email === user.email);
+      if (userIndex !== -1) users[userIndex] = user;
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("activeUser", JSON.stringify(user));
+      cargarEstudios();
+    }
+    
+  </script>
+  
+  <div class="event-grid" id="eventosEgresado"></div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+      const contenedor = document.getElementById("eventosEgresado");
+  
+      eventos.forEach(evento => {
+        const div = document.createElement("div");
+        div.className = "evento-card";
+        div.innerHTML = `
+          <strong>${evento.tipo}</strong><br>
+          ${evento.nombre}<br>
+          ${evento.fecha}<br>
+          Valor: ${evento.valor} - Cupos: ${evento.cupos}<br>
+          ${evento.departamento}, ${evento.ciudad}
+        `;
+        contenedor.appendChild(div);
+      });
+    });
+  </script>
+</body>
+</html>

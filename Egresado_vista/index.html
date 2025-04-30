@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Formulario de inicio de sesión -->
+    <div class="container-form">
+      <form class="sign-in">
+        <h2>Iniciar sesión</h2>
+        <div class="social-networks">
+          <ion-icon name="logo-facebook"></ion-icon>
+          <ion-icon name="logo-instagram"></ion-icon>
+        </div>
+        <span>Use su correo y contraseña</span>
+        <div class="container-input">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input type="text" placeholder="Email" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input type="password" placeholder="Contraseña" />
+          <small class="error-message"></small>
+        </div>
+        <a href="#" id="forgot-password-link">¿Olvidaste tu contraseña?</a>
+        <button class="button" type="submit">INICIAR SESIÓN</button>
+      </form>
+    </div>
+
+    <!-- Formulario de registro -->
+    <div class="container-form">
+      <form class="sign-up">
+        <h2>Registrarse</h2>
+        <span>Ingresa todos los campos</span>
+      
+        <div class="container-input">
+          <ion-icon name="person-outline"></ion-icon>
+          <input type="text" placeholder="Nombre" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="card-outline"></ion-icon>
+          <input type="text" placeholder="Identificación" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="call-outline"></ion-icon>
+          <input type="text" placeholder="Teléfono" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="home-outline"></ion-icon>
+          <input type="text" placeholder="Dirección" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="location-outline"></ion-icon>
+          <select name="departamento">
+            <option value="">Seleccione departamento</option>
+          </select>
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="business-outline"></ion-icon>
+          <select name="ciudad">
+            <option value="">Seleccione ciudad</option>
+          </select>
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="school-outline"></ion-icon>
+          <input type="text" placeholder="Programa Académico" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input type="text" placeholder="Email" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input type="password" placeholder="Contraseña" />
+          <small class="error-message"></small>
+        </div>
+        <div class="container-input">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          <select name="rol">
+            <option value="">Selecciona un rol</option>
+            <option value="egresado">Egresado</option>
+            <option value="admin">Administrador</option>
+          </select>
+          <small class="error-message"></small>
+        </div>
+      
+        <button class="button" type="submit">REGÍSTRATE</button>
+      </form>
+    </div>
+
+    <!-- Mensajes de bienvenida -->
+    <div class="container-welcome">
+      <div class="welcome-sign-up welcome">
+        <h3>Bienvenido</h3>
+        <p>Ingrese sus datos personales para usar todas las funciones del sitio</p>
+        <button class="button" id="btn-sign-up">Registrarse</button>
+      </div>
+      <div class="welcome-sign-in welcome">
+        <h3>Ingresar</h3>
+        <p>Regístrate con tus datos personales para ingresar</p>
+        <button class="button" id="btn-sign-in">Iniciar Sesión</button>
+      </div>
+    </div>
+  </div>
+  <div id="popup-recuperar" class="popup-overlay">
+    <div class="popup-box">
+      <h3>Recuperar Contraseña</h3>
+      <p>Ingresa tu correo registrado:</p>
+      <input type="email" id="popup-email" placeholder="Correo electrónico" />
+      <div class="popup-buttons">
+        <button id="popup-send">Enviar</button>
+        <button id="popup-cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- pop up -->
+  <div id="popup" class="popup">
+    <span id="popup-message"></span>
+  </div>
+
+  <!-- Librerías externas -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+  <!-- mis departamentoa -->
+  </script>
+  <script src="../departamentos/departamentos.js"></script>
+  <script src="../departamentos/filtros/ciudades.js"></script>
+
+  <!-- scripts locales, en orden -->
+  
+  <script src="registros.js"></script>  <!-- Registro y validaciones -->
+  <script src="login.js"></script>      <!-- Inicio de sesión -->
+  <script src="recuperarPassword.js"></script> <!-- recuperar contraseña -->
+  <script src="script.js"></script>     <!-- UI (botones, validaciones, registros, login) -->
+    
+
+</body>
+</html>

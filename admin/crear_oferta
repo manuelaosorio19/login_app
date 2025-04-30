@@ -1,0 +1,31 @@
+// Función para mostrar el popup de creación de oferta
+function mostrarPopupOferta() {
+  document.getElementById("popupOferta").style.display = "flex";
+}
+
+// Función para cerrar el popup de creación de oferta
+function cerrarPopupOferta() {
+  document.getElementById("popupOferta").style.display = "none";
+}
+
+// Evento de crear la oferta
+document.getElementById("formCrearOferta").addEventListener("submit", function(event) {
+  event.preventDefault();
+  
+  // Recogemos los datos del formulario
+  const nombreOferta = document.getElementById("nombreOferta").value;
+  const descripcionOferta = document.getElementById("descripcionOferta").value;
+  const fechaFinOferta = document.getElementById("fechaFinOferta").value;
+
+  // guardar la oferta en tu base de datos o en localStorage
+  console.log({
+    nombreOferta,
+    descripcionOferta,
+    fechaFinOferta
+  });
+
+  // Cerrar el popup después de crear la oferta
+  cerrarPopupOferta();
+  
+  alert("Oferta creada exitosamente.");
+});
