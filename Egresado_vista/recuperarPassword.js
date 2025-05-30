@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   const forgotLink = document.getElementById("forgot-password-link");
   const popupRecuperar = document.getElementById("popup-recuperar");
@@ -8,9 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const cancelBtn = document.getElementById("popup-cancel");
   const verifyBtn = document.getElementById("popup-verify");
   const cancelBtnCodigo = document.getElementById("popup-cancel-code");
+  const panelRestablecer = document.getElementById("panel-restablecer");
+  const btnRestablecer = document.getElementById("btn-restablecer");
+  const cancelResetBtn = document.getElementById("popup-cancel-reset");
+  const nuevaPasswordInput = document.getElementById("nueva-password");
+  const confirmarPasswordInput = document.getElementById("confirmar-password");
 
-  let codigoRecuperacion = ''; // Este será el código generado para enviar
-
+  // Mostrar popup para ingresar email al hacer clic en "Olvidé mi contraseña"
   if (forgotLink) {
     forgotLink.addEventListener("click", function (e) {
       e.preventDefault();
@@ -19,87 +24,129 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Acción de cancelar el popup de recuperación
+  // Cancelar popup recuperar email
   cancelBtn.addEventListener("click", () => {
     popupRecuperar.style.display = "none";
   });
 
-  // Acción de cancelar el popup del código
+  // Cancelar popup código
   cancelBtnCodigo.addEventListener("click", () => {
     popupCodigo.style.display = "none";
   });
 
-  // Enviar el correo con el código de recuperación
+  // Cancelar popup restablecer contraseña
+  cancelResetBtn.addEventListener("click", () => {
+    panelRestablecer.style.display = "none";
+  });
+
+  // Enviar código de recuperación
   sendBtn.addEventListener("click", async () => {
     const email = emailInput.value.trim();
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!regex.test(email)) {
-      showPopup("Por favor, introduce un correo electrónico válido.");
+      showPopup("Correo inválido.");
       return;
     }
 
     try {
-      // Generar el código de recuperación
-      codigoRecuperacion = Math.floor(100000 + Math.random() * 900000); // Generar un código de 6 dígitos
+      const codigoGenerado = String(Math.floor(100000 + Math.random() * 900000));
 
-      // Enviar el correo con el código de recuperación
-      const response = await fetch('http://localhost:3001/api/enviar-correo-recuperacion', {
+      const datosCodigo = {
+        codigo: codigoGenerado,
+        timestamp: Date.now()
+      };
+
+      // Guardar código antes de enviar correo
+      localStorage.setItem("codigoRecuperacion", JSON.stringify(datosCodigo));
+
+      const response = await fetch("http://localhost:3001/api/enviar-correo-recuperacion", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: email,
           asunto: "Recuperación de contraseña",
           mensajeHtml: `
             <h2>Recuperación de Contraseña</h2>
-            <p>Tu código de recuperación es: <strong>${codigoRecuperacion}</strong></p>
+            <p>Tu código de recuperación es: <strong>${codigoGenerado}</strong></p>
             <p>Este código caduca en 24 horas.</p>
           `
         })
       });
 
-      const data = await response.json();
-
       if (response.ok) {
-        showPopup("Correo de recuperación enviado con éxito.", true);
-        // Guardamos el código en el localStorage para la comparación posterior
-        localStorage.setItem('codigoRecuperacion', codigoRecuperacion);
+        showPopup("Correo enviado correctamente.", true);
         popupRecuperar.style.display = "none";
         popupCodigo.style.display = "flex";
       } else {
-        showPopup("No se pudo enviar el correo. Intenta nuevamente.");
+        showPopup("Error al enviar el correo.");
       }
-
-    } catch (error) {
-      console.error("Error al enviar el correo:", error);
-      showPopup("Hubo un error al enviar el correo. Intenta nuevamente.");
+    } catch (err) {
+      console.error("Error:", err);
+      showPopup("Error inesperado.");
     }
   });
 
-  // Verificar el código ingresado
+  // Verificar código de recuperación
   verifyBtn.addEventListener("click", () => {
-    const codigoIngresado = codigoInput.value.trim();
+    const ingresado = codigoInput.value.trim();
+    const guardadoRaw = localStorage.getItem("codigoRecuperacion");
 
-    // Recuperamos el código guardado en localStorage
-    const codigoGuardado = localStorage.getItem('codigoRecuperacion');
-
-    if (!codigoGuardado) {
-      showPopup("Código de recuperación no encontrado.");
+    if (!guardadoRaw) {
+      showPopup("No se ha generado un código aún.");
       return;
     }
 
-    if (codigoIngresado === codigoGuardado) {
-      showPopup("¡Código verificado correctamente! Ahora puedes restablecer tu contraseña.", true);
-      // Aquí puedes proceder a mostrar el formulario para restablecer la contraseña
-      // O redirigir a la página correspondiente
-    } else {
-      showPopup("El código ingresado es incorrecto. Intenta nuevamente.");
+    try {
+      const { codigo, timestamp } = JSON.parse(guardadoRaw);
+      const ahora = Date.now();
+
+      if (ahora - timestamp > 86400000) { // 24 horas en ms
+        showPopup("El código ha caducado. Solicita uno nuevo.");
+        localStorage.removeItem("codigoRecuperacion");
+        return;
+      }
+
+      if (ingresado === String(codigo)) {
+        showPopup("Código verificado. Puedes restablecer tu contraseña.", true);
+        popupCodigo.style.display = "none";
+        panelRestablecer.style.display = "flex";
+      } else {
+        showPopup("Código incorrecto.");
+      }
+    } catch (err) {
+      console.error("Error leyendo el código:", err);
+      showPopup("Error al verificar el código.");
     }
   });
 
-  // Función de popup global 
+  // Guardar nueva contraseña
+  btnRestablecer.addEventListener("click", () => {
+    const nuevaPass = nuevaPasswordInput.value.trim();
+    const confirmarPass = confirmarPasswordInput.value.trim();
+
+    if (!nuevaPass || !confirmarPass) {
+      showPopup("Por favor, completa ambos campos.");
+      return;
+    }
+
+    if (nuevaPass !== confirmarPass) {
+      showPopup("Las contraseñas no coinciden.");
+      return;
+    }
+
+    // Aquí va la lógica para actualizar la contraseña en tu backend o almacenamiento
+    // Por ejemplo, podrías hacer fetch POST con el email y nuevaPass
+
+    showPopup("Contraseña restablecida correctamente.", true);
+
+    // Limpiar campos y cerrar panel
+    nuevaPasswordInput.value = "";
+    confirmarPasswordInput.value = "";
+    panelRestablecer.style.display = "none";
+  });
+
+  // Popup de mensajes
   function showPopup(message, isSuccess = false) {
     const popup = document.getElementById("popup");
     const messageSpan = document.getElementById("popup-message");
