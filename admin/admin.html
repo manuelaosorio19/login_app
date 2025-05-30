@@ -3,163 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <title>Panel Admin</title>
+  <link rel="stylesheet" href="estilo.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
-      font-family: sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    .dashboard-nav {
-      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+      margin: 20px;
     }
     .dashboard-nav button {
       margin-right: 10px;
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      padding: 8px 15px;
       cursor: pointer;
     }
     .dashboard-section {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
       display: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-top: 20px;
     }
-    .dashboard-section h3 {
-      margin-top: 0;
+    .form-field {
+      margin-bottom: 15px;
     }
-    .info-container {
+    input[type="number"] {
+      padding: 5px;
+      width: 200px;
+      margin-right: 10px;
+    }
+    button {
+      padding: 6px 12px;
+    }
+    .egresado-info {
       border: 1px solid #ccc;
       padding: 15px;
-      border-radius: 8px;
-      background-color: #fafafa;
-    }
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-    .study-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin-top: 10px;
-    }
-    .form-field label {
-      font-weight: bold;
-      display: block;
-      font-size: 0.9em;
-      margin-bottom: 4px;
-    }
-    .form-field input,
-    .form-field select {
-      width: 100%;
-      padding: 5px;
-      font-size: 0.9em;
-      box-sizing: border-box;
-    }
-    .info-container button {
-      background-color: orange;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .event-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-      font-size: 0.9rem;
-    }
-    .event-grid div {
-      padding: 6px;
-      border: 1px solid #ccc;
-      background: #fafafa;
-    }
-    .offers-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-    .offer-item {
-      text-align: center;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .offer-item img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-    #tablaEstudios {
-      width: 100%;
-      margin-top: 10px;
-      border-collapse: collapse;
-    }
-    #tablaEstudios th, #tablaEstudios td {
-      border: 1px solid #ccc;
-      padding: 6px;
-      text-align: left;
-    }
-    #tablaEstudios button {
-      background-color: orange;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .egresado-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       margin-top: 15px;
+      background: #f9f9f9;
+      border-radius: 5px;
     }
-
+    .egresado-grid {
+      display: flex;
+      gap: 20px;
+    }
     .egresado-col p {
-      margin: 8px 0;
-      font-size: 0.95em;
+      margin: 5px 0;
     }
-
-    #resEstudios {
+    table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      background: #fff;
     }
-
-    #resEstudios th, #resEstudios td {
-      border: 1px solid #ccc;
+    th, td {
+      border: 1px solid #aaa;
       padding: 8px;
       text-align: left;
     }
-
-    /* Modificación de estilos: */
-    .form-field input#buscarDoc {
-      width: 150px; /* Campo de documento más pequeño */
+    th {
+      background: #ddd;
     }
-    .form-field button {
-      background-color: orange; /* Botón de buscar naranja */
+    /* Popup message style */
+    .popup-message {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f44336;
       color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      padding: 10px 20px;
+      border-radius: 5px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+    .popup-message.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .popup-message.success {
+      background-color: #4CAF50;
     }
   </style>
 </head>
@@ -176,8 +94,9 @@
     <h3>Buscar Egresado por Documento</h3>
     <div class="form-field">
       <label for="buscarDoc">Documento:</label>
-      <input type="number" id="buscarDoc" placeholder="Ingresa el documento del egresado">
+      <input type="number" id="buscarDoc" placeholder="Ingresa el documento del egresado" />
       <button onclick="buscarEgresado()">Buscar</button>
+      <button onclick="exportarEgresadosExcel()">Exportar todos los egresados a Excel</button>
     </div>
 
     <div id="resultadoEgresado" class="egresado-info" style="display: none;">
@@ -232,19 +151,20 @@
     </div>
   </div>
 
+  <!-- Popup para mensajes -->
+  <div id="popupMessage" class="popup-message"></div>
+
+  <script src="crear_evento.js"></script>
+  <script src="../departamentos/departamentos.js"></script>
+
   <script>
     const user = JSON.parse(localStorage.getItem("activeUser"));
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    if (user && user.rol === "admin") {
-      document.querySelector("h2").textContent = `Bienvenido ${user.name} al Panel`;
-
-      // Validación para proteger el acceso
-      if (!user || user.rol !== "admin") {
-        window.location.href = "index.html";
-      }
+    if (!user || user.rol !== "admin") {
+      window.location.href = "index.html";
     } else {
-      document.body.innerHTML = "<p>Sesión no iniciada. <a href='index.html'>Volver al inicio</a></p>";
+      document.querySelector("h2").textContent = `Bienvenido ${user.name} al Panel`;
     }
 
     function cerrarSesion() {
@@ -253,48 +173,94 @@
     }
 
     function mostrarSeccion(id) {
-      document.querySelectorAll(".dashboard-section").forEach(sec => sec.style.display = "none");
+      document.querySelectorAll(".dashboard-section").forEach(sec => (sec.style.display = "none"));
       const seccion = document.getElementById(id);
       if (seccion) seccion.style.display = "block";
     }
 
-    function buscarEgresado() {
-      const doc = document.getElementById("buscarDoc").value;
-      const egresado = users.find(user => user.identificacion == doc);
+    function mostrarPopupMensaje(texto, tipo = "error") {
+      const popup = document.getElementById("popupMessage");
+      popup.textContent = texto;
+      popup.className = "popup-message show " + (tipo === "success" ? "success" : "error");
 
+      setTimeout(() => {
+        popup.classList.remove("show");
+      }, 3000);
+    }
+
+    function buscarEgresado() {
+      const doc = document.getElementById("buscarDoc").value.trim();
+      if (!doc) {
+        mostrarPopupMensaje("Por favor ingresa un documento.", "error");
+        return;
+      }
+      const egresado = users.find((user) => user.identificacion == doc);
       if (egresado) {
         document.getElementById("resultadoEgresado").style.display = "block";
         document.getElementById("resNombre").textContent = egresado.name;
         document.getElementById("resIdentificacion").textContent = egresado.identificacion;
         document.getElementById("resEmail").textContent = egresado.email;
-        document.getElementById("resTelefono").textContent = egresado.telefono;
-        document.getElementById("resDireccion").textContent = egresado.direccion;
-        document.getElementById("resDepto").textContent = egresado.departamento;
-        document.getElementById("resCiudad").textContent = egresado.ciudad;
-        document.getElementById("resPrograma").textContent = egresado.programa;
-        document.getElementById("resRol").textContent = egresado.rol;
+        document.getElementById("resTelefono").textContent = egresado.telefono || "-";
+        document.getElementById("resDireccion").textContent = egresado.direccion || "-";
+        document.getElementById("resDepto").textContent = egresado.departamento || "-";
+        document.getElementById("resCiudad").textContent = egresado.ciudad || "-";
+        document.getElementById("resPrograma").textContent = egresado.programa || "-";
+        document.getElementById("resRol").textContent = egresado.rol || "-";
 
         cargarEstudios(egresado.estudios);
       } else {
-        alert("Egresado no encontrado.");
+        mostrarPopupMensaje("Egresado no encontrado.", "error");
+        document.getElementById("resultadoEgresado").style.display = "none";
       }
     }
 
     function cargarEstudios(estudios) {
       const tbody = document.querySelector("#resEstudios tbody");
       tbody.innerHTML = "";
-      estudios.forEach(e => {
+      if (!estudios || estudios.length === 0) {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `<td colspan="3" style="text-align:center;">No hay estudios registrados</td>`;
+        tbody.appendChild(fila);
+        return;
+      }
+      estudios.forEach((e) => {
         const fila = document.createElement("tr");
         fila.innerHTML = `<td>${e.institucion}</td><td>${e.titulo}</td><td>${e.anio}</td>`;
         tbody.appendChild(fila);
       });
     }
 
-    mostrarSeccion('informacionEgresado');
-    
-    
+    function exportarEgresadosExcel() {
+      const data = users
+        .filter((user) => user.rol === "egresado")
+        .map((user) => ({
+          Nombre: user.name,
+          Identificación: user.identificacion,
+          Email: user.email,
+          Teléfono: user.telefono || "-",
+          Dirección: user.direccion || "-",
+          Departamento: user.departamento || "-",
+          Ciudad: user.ciudad || "-",
+          Programa: user.programa || "-",
+          Rol: user.rol || "-",
+          ÚltimaActualización: user.updatedAt || "N/A",
+        }));
+
+      if (!data.length) {
+        mostrarPopupMensaje("No hay egresados registrados.", "error");
+        return;
+      }
+
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Egresados");
+
+      XLSX.writeFile(workbook, "egresados.xlsx");
+      mostrarPopupMensaje("Exportación completada con éxito.", "success");
+    }
+
+    // Mostrar sección inicial
+    mostrarSeccion("informacionEgresado");
   </script>
-  <script src="../departamentos/departamentos.js"></script>
-  <script src="crear_evento.js"></script>
 </body>
 </html>

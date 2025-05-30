@@ -1,9 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
   const forgotLink = document.getElementById("forgot-password-link");
   const popupRecuperar = document.getElementById("popup-recuperar");
+  const popupCodigo = document.getElementById("popup-codigo");
   const emailInput = document.getElementById("popup-email");
+  const codigoInput = document.getElementById("popup-codigo-input");
   const sendBtn = document.getElementById("popup-send");
   const cancelBtn = document.getElementById("popup-cancel");
+  const verifyBtn = document.getElementById("popup-verify");
+  const cancelBtnCodigo = document.getElementById("popup-cancel-code");
+
+  let codigoRecuperacion = ''; // Este será el código generado para enviar
 
   if (forgotLink) {
     forgotLink.addEventListener("click", function (e) {
@@ -13,10 +19,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Acción de cancelar el popup de recuperación
   cancelBtn.addEventListener("click", () => {
     popupRecuperar.style.display = "none";
   });
 
+  // Acción de cancelar el popup del código
+  cancelBtnCodigo.addEventListener("click", () => {
+    popupCodigo.style.display = "none";
+  });
+
+  // Enviar el correo con el código de recuperación
   sendBtn.addEventListener("click", async () => {
     const email = emailInput.value.trim();
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,9 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    console.log("Clic en Enviar");
-
     try {
+      // Generar el código de recuperación
+      codigoRecuperacion = Math.floor(100000 + Math.random() * 900000); // Generar un código de 6 dígitos
+
+      // Enviar el correo con el código de recuperación
       const response = await fetch('http://localhost:3001/api/enviar-correo-recuperacion', {
         method: "POST",
         headers: {
@@ -36,23 +51,23 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify({
           email: email,
-          asunto: "Recuperar contraseña",
+          asunto: "Recuperación de contraseña",
           mensajeHtml: `
-            <h3>Hola,</h3>
-            <p>Has olvidado tu contraseña. Aquí tienes un código para restablecerla.</p>
-            <p><strong>Correo:</strong> ${email}</p>
-            <p><strong>Código:</strong> 123456</p>
-            <p>¡Este código vence en 24 horas!</p>
+            <h2>Recuperación de Contraseña</h2>
+            <p>Tu código de recuperación es: <strong>${codigoRecuperacion}</strong></p>
+            <p>Este código caduca en 24 horas.</p>
           `
         })
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (response.ok) {
         showPopup("Correo de recuperación enviado con éxito.", true);
+        // Guardamos el código en el localStorage para la comparación posterior
+        localStorage.setItem('codigoRecuperacion', codigoRecuperacion);
         popupRecuperar.style.display = "none";
+        popupCodigo.style.display = "flex";
       } else {
         showPopup("No se pudo enviar el correo. Intenta nuevamente.");
       }
@@ -60,6 +75,27 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.error("Error al enviar el correo:", error);
       showPopup("Hubo un error al enviar el correo. Intenta nuevamente.");
+    }
+  });
+
+  // Verificar el código ingresado
+  verifyBtn.addEventListener("click", () => {
+    const codigoIngresado = codigoInput.value.trim();
+
+    // Recuperamos el código guardado en localStorage
+    const codigoGuardado = localStorage.getItem('codigoRecuperacion');
+
+    if (!codigoGuardado) {
+      showPopup("Código de recuperación no encontrado.");
+      return;
+    }
+
+    if (codigoIngresado === codigoGuardado) {
+      showPopup("¡Código verificado correctamente! Ahora puedes restablecer tu contraseña.", true);
+      // Aquí puedes proceder a mostrar el formulario para restablecer la contraseña
+      // O redirigir a la página correspondiente
+    } else {
+      showPopup("El código ingresado es incorrecto. Intenta nuevamente.");
     }
   });
 

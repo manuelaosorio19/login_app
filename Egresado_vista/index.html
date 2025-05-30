@@ -10,7 +10,7 @@
   <div class="container">
     <!-- Formulario de inicio de sesión -->
     <div class="container-form">
-      <form class="sign-in">
+      <form class="sign-in" id="form-login">
         <h2>Iniciar sesión</h2>
         <div class="social-networks">
           <ion-icon name="logo-facebook"></ion-icon>
@@ -34,10 +34,9 @@
 
     <!-- Formulario de registro -->
     <div class="container-form">
-      <form class="sign-up">
+      <form class="sign-up" id="form-register">
         <h2>Registrarse</h2>
         <span>Ingresa todos los campos</span>
-      
         <div class="container-input">
           <ion-icon name="person-outline"></ion-icon>
           <input type="text" placeholder="Nombre" />
@@ -96,7 +95,6 @@
           </select>
           <small class="error-message"></small>
         </div>
-      
         <button class="button" type="submit">REGÍSTRATE</button>
       </form>
     </div>
@@ -115,19 +113,34 @@
       </div>
     </div>
   </div>
+
+  <!-- Popup para recuperar contraseña -->
   <div id="popup-recuperar" class="popup-overlay">
     <div class="popup-box">
       <h3>Recuperar Contraseña</h3>
       <p>Ingresa tu correo registrado:</p>
       <input type="email" id="popup-email" placeholder="Correo electrónico" />
       <div class="popup-buttons">
-        <button id="popup-send">Enviar</button>
+        <button id="popup-send">Enviar código</button>
         <button id="popup-cancel">Cancelar</button>
       </div>
     </div>
   </div>
 
-  <!-- pop up -->
+  <!-- Popup para ingresar código de recuperación -->
+  <div id="popup-codigo" class="popup-overlay" style="display: none;">
+    <div class="popup-box">
+      <h3>Verificar código de recuperación</h3>
+      <p>Introduce el código que te hemos enviado:</p>
+      <input type="text" id="popup-codigo-input" placeholder="Código de recuperación" />
+      <div class="popup-buttons">
+        <button id="popup-verify">Verificar código</button>
+        <button id="popup-cancel-code">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje pop up -->
   <div id="popup" class="popup">
     <span id="popup-message"></span>
   </div>
@@ -143,11 +156,10 @@
 
   <!-- scripts locales, en orden -->
   
-  <script src="registros.js"></script>  <!-- Registro y validaciones -->
-  <script src="login.js"></script>      <!-- Inicio de sesión -->
-  <script src="recuperarPassword.js"></script> <!-- recuperar contraseña -->
-  <script src="script.js"></script>     <!-- UI (botones, validaciones, registros, login) -->
-    
+  <script src="registros.js"></script> <!-- Registro y validaciones -->
+  <script src="recuperarPassword.js"></script> <!-- Recuperar contraseña -->
+  <script src="login.js"></script> <!-- Inicio de sesión -->
+  <script src="script.js"></script> <!-- UI (botones, validaciones, registros, login) -->
 
 </body>
 </html>
