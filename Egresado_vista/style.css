@@ -379,3 +379,161 @@ body.menu-open {
         transform: translateX(250px);
     }
 }
+
+/* Tema claro (por defecto) */
+body {
+  background: #f4f4f4;
+  color: #333;
+}
+
+/* Contenedor y layout flex para menú lateral y contenido */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Menú lateral claro */
+nav.sidebar {
+  width: 220px;
+  background-color: #007bff;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+/* Botones del menú claro */
+nav.sidebar button {
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  padding: 12px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  transition: background 0.3s;
+}
+
+nav.sidebar button:hover,
+nav.sidebar button.active {
+  background-color: #0056b3;
+}
+
+nav.sidebar button.logout {
+  margin-top: auto;
+  background-color: #dc3545;
+  font-weight: bold;
+}
+
+nav.sidebar button.logout:hover {
+  background-color: #a71d2a;
+}
+
+/* Contenido principal claro */
+main.content {
+  margin-left: 220px;
+  padding: 30px 40px;
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  color: #333;
+}
+
+/* Secciones */
+.dashboard-section {
+  display: none;
+}
+
+.dashboard-section.active {
+  display: block;
+}
+
+/* Modo oscuro */
+body.dark-mode {
+  background: #121212;
+  color: #e1e1e1;
+}
+
+body.dark-mode nav.sidebar {
+  background-color: #1f1f1f;
+  color: #e1e1e1;
+  box-shadow: none;
+}
+
+body.dark-mode nav.sidebar button {
+  color: #e1e1e1;
+}
+
+body.dark-mode nav.sidebar button:hover,
+body.dark-mode nav.sidebar button.active {
+  background-color: #333;
+}
+
+body.dark-mode nav.sidebar button.logout {
+  background-color: #b03a3a;
+}
+
+body.dark-mode nav.sidebar button.logout:hover {
+  background-color: #7a2323;
+}
+
+body.dark-mode main.content {
+  background: #222;
+  color: #e1e1e1;
+  box-shadow: none;
+}
+
+body.dark-mode .dashboard-section {
+  background: #2a2a2a;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background-color: #333;
+  color: #e1e1e1;
+  border: 1px solid #555;
+}
+
+body.dark-mode button:not(.logout) {
+  background-color: orange;
+  color: black;
+}
+#confirm-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 9999;
+}
+
+/*botones inscripcion */
+.btn-inscribirse {
+  padding: 8px 12px;
+  margin-top: 8px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-inscribirse:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+/* estilo para los eventos*/

@@ -6,30 +6,154 @@
   <link rel="stylesheet" href="estilo.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
+     * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 0;
+      font-family: sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      min-height: 100vh;
     }
-    .dashboard-nav button {
-      margin-right: 10px;
-      padding: 8px 15px;
+
+    /* Menú lateral */
+    nav.sidebar {
+      width: 220px;
+      background-color: #007bff;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    nav.sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      padding-left: 10px;
+    }
+    nav.sidebar button {
+      background: transparent;
+      border: none;
+      color: white;
+      text-align: left;
+      padding: 12px 20px;
+      font-size: 1rem;
       cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      transition: background 0.3s;
     }
+    nav.sidebar button:hover,
+    nav.sidebar button.active {
+      background-color: #222750;
+    }
+    nav.sidebar button.logout {
+      margin-top: auto;
+      background-color: #007bff;
+      font-weight: bold;
+    }
+    nav.sidebar button.logout:hover {
+      background-color: #222750;
+    }
+
+    /* Contenido principal */
+    main.content {
+      margin-left: 220px;
+      padding: 30px 40px;
+      flex: 1;
+    }
+    main.content h2 {
+      margin-top: 0;
+    }
+
+    /* Secciones */
     .dashboard-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       display: none;
-      margin-top: 20px;
     }
-    .form-field {
-      margin-bottom: 15px;
+    .dashboard-section.active {
+      display: block;
     }
-    input[type="number"] {
+
+    /* Resto de estilos originales adaptados */
+    .info-container {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #fafafa;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .study-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .form-field label {
+      font-weight: bold;
+      display: block;
+      font-size: 0.9em;
+      margin-bottom: 4px;
+    }
+    .form-field input,
+    .form-field select {
+      width: 100%;
       padding: 5px;
-      width: 200px;
-      margin-right: 10px;
+      font-size: 0.9em;
+      box-sizing: border-box;
     }
-    button {
-      padding: 6px 12px;
+    .info-container button {
+      background-color: orange;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
     }
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+    .event-grid div {
+      padding: 6px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+    }
+    .offers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .offer-item {
+      text-align: center;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .offer-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
     .egresado-info {
       border: 1px solid #ccc;
       padding: 15px;
@@ -40,6 +164,7 @@
     .egresado-grid {
       display: flex;
       gap: 20px;
+      flex-wrap: wrap;
     }
     .egresado-col p {
       margin: 5px 0;
@@ -57,6 +182,7 @@
     th {
       background: #ddd;
     }
+
     /* Popup message style */
     .popup-message {
       position: fixed;
@@ -79,77 +205,177 @@
     .popup-message.success {
       background-color: #4CAF50;
     }
+
+    /* Otros estilos para eventos y ofertas */
+    .event-grid, .offers-grid {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .offer-item {
+      background: #e0e0e0;
+      padding: 15px;
+      border-radius: 6px;
+      width: 250px;
+      box-sizing: border-box;
+    }
+    .offer-item img {
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    /* Modo oscuro */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.dark-mode nav.sidebar {
+  background-color: #1e1e2f;
+  color: #ccc;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode nav.sidebar button {
+  color: #ccc;
+}
+
+body.dark-mode nav.sidebar button:hover,
+body.dark-mode nav.sidebar button.active {
+  background-color: #3a3a55;
+}
+
+body.dark-mode nav.sidebar button.logout {
+  background-color: #5064a8;
+}
+
+body.dark-mode nav.sidebar button.logout:hover {
+  background-color: #2f3a72;
+}
+
+body.dark-mode main.content {
+  background-color: #1e1e2e;
+  color: #ddd;
+}
+
+body.dark-mode .dashboard-section {
+  background-color: #29293d;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .info-container,
+body.dark-mode .event-grid div,
+body.dark-mode .offer-item,
+body.dark-mode #tablaEstudios th,
+body.dark-mode #tablaEstudios td {
+  background-color: #2c2c44;
+  border-color: #444466;
+  color: #ddd;
+}
+
+body.dark-mode .info-container button,
+body.dark-mode #tablaEstudios button {
+  background-color: #ff7f50;
+  color: #222;
+}
+body, nav.sidebar, main.content, .dashboard-section, .info-container, .event-grid div, .offer-item, #tablaEstudios th, #tablaEstudios td, nav.sidebar button {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+}
+#confirm-popup button {
+  background-color: orange;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 8px; /* para separación entre botones */
+}
+
+#confirm-popup button:hover {
+  background-color: #cc7a00;
+}
+
+#confirm-popup div {
+  text-align: right;
+  margin-top: 15px;
+}
   </style>
 </head>
 <body>
-  <h2>Bienvenido Administrador</h2>
-  <nav class="dashboard-nav">
-    <button onclick="mostrarSeccion('informacionEgresado')">Información Egresado</button>
-    <button onclick="mostrarSeccion('eventos')">Crear Evento</button>
-    <button onclick="mostrarSeccion('ofertas')">Gestionar Oferta</button>
-    <button onclick="cerrarSesion()">Cerrar sesión</button>
+  <nav class="sidebar">
+    <h2>Administrador</h2>
+    <button id="btnInfo" class="active" onclick="mostrarSeccion('informacionEgresado', this)">Información Egresado</button>
+    <button id="btnEventos" onclick="mostrarSeccion('eventos', this)">Crear Evento</button>
+    <button id="btnOfertas" onclick="mostrarSeccion('ofertas', this)">Gestionar Oferta</button>
+    <button id="btnDarkMode">Modo Oscuro 🌙</button>
+    <button class="logout" onclick="cerrarSesion()">Cerrar sesión</button>
   </nav>
 
-  <div id="informacionEgresado" class="dashboard-section">
-    <h3>Buscar Egresado por Documento</h3>
-    <div class="form-field">
-      <label for="buscarDoc">Documento:</label>
-      <input type="number" id="buscarDoc" placeholder="Ingresa el documento del egresado" />
-      <button onclick="buscarEgresado()">Buscar</button>
-      <button onclick="exportarEgresadosExcel()">Exportar todos los egresados a Excel</button>
-    </div>
+  <main class="content">
+    <h2 id="bienvenida">Bienvenido Administrador</h2>
 
-    <div id="resultadoEgresado" class="egresado-info" style="display: none;">
-      <h4>Información del Egresado</h4>
-      <div class="egresado-grid">
-        <div class="egresado-col">
-          <p><strong>Nombre:</strong> <span id="resNombre"></span></p>
-          <p><strong>Identificación:</strong> <span id="resIdentificacion"></span></p>
-          <p><strong>Email:</strong> <span id="resEmail"></span></p>
+    <section id="informacionEgresado" class="dashboard-section active">
+  <h3>Buscar Egresado por Documento</h3>
+  <div class="form-field buscar-container">
+    <label for="buscarDoc">Documento:</label>
+    <input type="number" id="buscarDoc" placeholder="Ingresa el documento del egresado" />
+    <button onclick="buscarEgresado()">Buscar</button>
+    <button onclick="exportarEgresadosExcel()">Exportar todos los egresados a Excel</button>
+  </div>
+
+  <div id="resultadoEgresado" class="egresado-info" style="display: none;">
+        <h4>Información del Egresado</h4>
+        <div class="egresado-grid">
+          <div class="egresado-col">
+            <p><strong>Nombre:</strong> <span id="resNombre"></span></p>
+            <p><strong>Identificación:</strong> <span id="resIdentificacion"></span></p>
+            <p><strong>Email:</strong> <span id="resEmail"></span></p>
+          </div>
+          <div class="egresado-col">
+            <p><strong>Teléfono:</strong> <span id="resTelefono"></span></p>
+            <p><strong>Dirección:</strong> <span id="resDireccion"></span></p>
+            <p><strong>Departamento:</strong> <span id="resDepto"></span></p>
+          </div>
+          <div class="egresado-col">
+            <p><strong>Ciudad:</strong> <span id="resCiudad"></span></p>
+            <p><strong>Programa:</strong> <span id="resPrograma"></span></p>
+            <p><strong>Rol:</strong> <span id="resRol"></span></p>
+          </div>
         </div>
-        <div class="egresado-col">
-          <p><strong>Teléfono:</strong> <span id="resTelefono"></span></p>
-          <p><strong>Dirección:</strong> <span id="resDireccion"></span></p>
-          <p><strong>Departamento:</strong> <span id="resDepto"></span></p>
-        </div>
-        <div class="egresado-col">
-          <p><strong>Ciudad:</strong> <span id="resCiudad"></span></p>
-          <p><strong>Programa:</strong> <span id="resPrograma"></span></p>
-          <p><strong>Rol:</strong> <span id="resRol"></span></p>
+
+        <h4 style="margin-top: 20px;">Estudios Académicos</h4>
+        <table id="resEstudios">
+          <thead>
+            <tr>
+              <th>Institución</th>
+              <th>Título</th>
+              <th>Año</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="eventos" class="dashboard-section">
+      <h3>Gestión de Eventos</h3>
+      <div id="formularioCrearEvento"></div>
+      <div class="event-grid" id="listaEventos"></div>
+    </section>
+
+    <section id="ofertas" class="dashboard-section">
+      <h3>Ofertas</h3>
+      <div class="offers-grid">
+        <div class="offer-item">
+          <img src="https://via.placeholder.com/150" alt="Oferta 1" />
+          <p><strong>Nombre:</strong> Curso Java</p>
+          <p><strong>Descripción:</strong> Aprende Java desde cero</p>
+          <p><strong>Fecha Fin:</strong> 30/06/2025</p>
         </div>
       </div>
-
-      <h4 style="margin-top: 20px;">Estudios Académicos</h4>
-      <table id="resEstudios">
-        <thead>
-          <tr>
-            <th>Institución</th>
-            <th>Título</th>
-            <th>Año</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div id="eventos" class="dashboard-section">
-    <h3>Gestión de Eventos</h3>
-    <div id="formularioCrearEvento"></div>
-    <div class="event-grid" id="listaEventos"></div>
-  </div>
-
-  <div id="ofertas" class="dashboard-section">
-    <h3>Ofertas</h3>
-    <div class="offers-grid">
-      <div class="offer-item">
-        <img src="https://via.placeholder.com/150" alt="Oferta 1" />
-        <p><strong>Nombre:</strong> Curso Java</p>
-        <p><strong>Descripción:</strong> Aprende Java desde cero</p>
-        <p><strong>Fecha Fin:</strong> 30/06/2025</p>
-      </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <!-- Popup para mensajes -->
   <div id="popupMessage" class="popup-message"></div>
@@ -164,18 +390,29 @@
     if (!user || user.rol !== "admin") {
       window.location.href = "index.html";
     } else {
-      document.querySelector("h2").textContent = `Bienvenido ${user.name} al Panel`;
+      document.getElementById("bienvenida").textContent = `Bienvenido ${user.name} al Panel`;
     }
 
     function cerrarSesion() {
-      localStorage.removeItem("activeUser");
-      window.location.href = "../Egresado_vista/index.html";
-    }
+      showConfirmPopup("¿Está seguro que desea cerrar sesión?", () => {
+    localStorage.removeItem("activeUser");
+    window.location.href = "../Egresado_vista/index.html";
+  });
+   }
 
-    function mostrarSeccion(id) {
-      document.querySelectorAll(".dashboard-section").forEach(sec => (sec.style.display = "none"));
+    function mostrarSeccion(id, boton) {
+      // Oculta todas las secciones
+      document.querySelectorAll(".dashboard-section").forEach(sec => sec.classList.remove("active"));
+      
+      // Quita clase active a todos botones dentro del menú lateral
+      document.querySelectorAll("nav.sidebar button").forEach(btn => btn.classList.remove("active"));
+
+      // Muestra la sección deseada
       const seccion = document.getElementById(id);
-      if (seccion) seccion.style.display = "block";
+      if (seccion) seccion.classList.add("active");
+
+      // Marca el botón seleccionado
+      if (boton) boton.classList.add("active");
     }
 
     function mostrarPopupMensaje(texto, tipo = "error") {
@@ -259,8 +496,69 @@
       mostrarPopupMensaje("Exportación completada con éxito.", "success");
     }
 
-    // Mostrar sección inicial
-    mostrarSeccion("informacionEgresado");
+    // Mostrar sección inicial por defecto
+    mostrarSeccion("informacionEgresado", document.getElementById("btnInfo"));
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btnDarkMode = document.getElementById("btnDarkMode");
+
+  // Cargar modo guardado en localStorage
+  if(localStorage.getItem("darkMode") === "enabled") {
+    document.body.classList.add("dark-mode");
+    btnDarkMode.textContent = "Modo Claro ☀️";
+  }
+
+  btnDarkMode.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    if(document.body.classList.contains("dark-mode")) {
+      btnDarkMode.textContent = "Modo Claro ☀️";
+      localStorage.setItem("darkMode", "enabled");
+    } else {
+      btnDarkMode.textContent = "Modo Oscuro 🌙";
+      localStorage.setItem("darkMode", "disabled");
+    }
+  });
+});
+</script>
+<script>
+  function showConfirmPopup(message, onConfirm, onCancel) {
+    const popup = document.getElementById("confirm-popup");
+    const msg = document.getElementById("confirm-message");
+    const btnYes = document.getElementById("confirm-yes");
+    const btnNo = document.getElementById("confirm-no");
+
+    msg.textContent = message;
+    popup.style.display = "block";
+
+    function cleanUp() {
+      btnYes.removeEventListener("click", yesHandler);
+      btnNo.removeEventListener("click", noHandler);
+      popup.style.display = "none";
+    }
+
+    function yesHandler() {
+      cleanUp();
+      if (typeof onConfirm === "function") onConfirm();
+    }
+
+    function noHandler() {
+      cleanUp();
+      if (typeof onCancel === "function") onCancel();
+    }
+
+    btnYes.addEventListener("click", yesHandler);
+    btnNo.addEventListener("click", noHandler);
+  }
+</script>
+<!-- Popup de confirmación -->
+<div id="confirm-popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 9999;">
+  <p id="confirm-message"></p>
+  <div style="text-align: right; margin-top: 15px;">
+    <button id="confirm-yes">Sí</button>
+    <button id="confirm-no">No</button>
+  </div>
+</div>
 </body>
 </html>

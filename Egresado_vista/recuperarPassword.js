@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Función de popup global (puedes moverla a un archivo util.js si la compartes)
+  // Función de popup global 
   function showPopup(message, isSuccess = false) {
     const popup = document.getElementById("popup");
     const messageSpan = document.getElementById("popup-message");
